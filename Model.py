@@ -48,7 +48,7 @@ class Model:              # In model class we have to maintain the collection of
         return True
 
 
-    def add_song_to_favourites(self,song_name,song_path):    # add_song_to_favourites() method will add the song in database table myfavourites but befor adding the song we will check whether the song is already present inside table or not ,if it is not present then we will insert it into table . in this method while inserting the song we are generating the song id from previous song id , if no songs is present inside the table then we will be providing song_id =1 to the song and if there are some songs already present inside the table then we will take out the max song id from table and then increment it by 1 
+    def add_song_to_favourites(self,song_name,song_path):    # add_song_to_favourites() method will add the song in database table myfavourites but befor adding the song we will check whether the song is already present inside table or not ,if it is not present then we will insert it into table . in this method while inserting the song we are generating the song id from previous song id , if no songs is present inside the table then we will be providing song_id =1 to the song and if songs already present inside the table then we will take out the max song id from table and then increment it by 1 and insert the new song by allocating the incremented id to the song . 
         is_song_present=self.search_song_in_favourites(song_name)
         if is_song_present==True:
             return "Song already present in favourites"
@@ -61,7 +61,7 @@ class Model:              # In model class we have to maintain the collection of
         self.conn.commit()   # python ka autocommit off rehta hai isliye commit hamesha karna bro after executing DML statements
         return "Song successfully added to your favourites"
     
-    def load_songs_from_favourites(self):
+    def load_songs_from_favourites(self):       # load_songs_from_favourites this method is used to load the song from database. 
         self.cur.execute("select song_name,song_path from myfavourites")
         song_present=False
         for song_name,song_path in self.cur:      # cur ke ander list of tuples aaye hai toh apn ko data nikalna hai tuple se toh unpacking karni padegi tuples ki agr ek variale bas lenge toh pura tuple usme aa jayega but we want song_name and song_path both should come in different varibale therefore we are doing unpacking yeh idea pehle kiyun nhi aaya 🤔.
@@ -72,7 +72,15 @@ class Model:              # In model class we have to maintain the collection of
         else:
             return "No songs present in your favourites"
     
-    def remove_song_from_favourites(self,song_name)
+    def remove_song_from_favourites(self,song_name): # remove_song from favourites this method will remove the song from database 
+        self.cur.execute("Delete from myfavourites where song_name=:1",(song_name,))
+        count=self.cur.rowcount
+        if count==0:
+            return "Song not present in ur favourites"
+        else:
+            self.song_dict.pop(song_name)   # song_name is key in dictionary and song_path is value 
+            self.conn.commit()
+            return "Song deleted from ur favourites"
 
 
 
