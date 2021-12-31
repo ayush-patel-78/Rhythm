@@ -14,7 +14,7 @@ class Player:  # This class will have to do the following tasks:
                #  it will initialize the pygame.mixer module which will provides us several functions to handle music playing and management (pygame.mixer provides instance methods for playing , stopping , pausing and resume a song )
         def __init__(self) :
             mixer.init()                # initializing mixer 
-            self.my_model=Model()       # instantiating model 
+            self.my_model=Model.Model()       # instantiating model 
 
         def get_db_status(self):
             return self.my_model.get_db_status()

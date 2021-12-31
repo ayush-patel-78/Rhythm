@@ -1,11 +1,21 @@
 # UI is genrated by page id using drag and drop features  
-import sys
+# view module will manage the user actions and interact with Player class 
+import random                      # for randomly changing color of song name 
+import sys                         # sys module provides exit method and other system information 
 import tkinter as tk
 import tkinter.ttk as ttk
 import musicplayer_support
+import threading                   # it is used for multithreading 
+import time                        # it will handle time 
+from tkinter import filedialog,messagebox       # for providing message to the user 
+from cx_Oracle import DatabaseError            
+from pygame import mixer 
+import Player
+from MyException import *       # for handling our exceptions    
+import traceback                 
 
 def vp_start_gui():
-    #Starting point when module is the main routine.
+    # Starting point when module is the main routine.
     global root
     root = tk.Tk()
     top=View(root)
@@ -47,7 +57,7 @@ class View:
         self.songName.configure(disabledforeground="#a3a3a3")
         self.songName.configure(font=font13)
         self.songName.configure(foreground="#000000")
-        self.songName.configure(text='''Ladki Aankh Maare''')
+        self.songName.configure(text='''Hue Hue Hue....''')
 
         self.songProgress = ttk.Progressbar(top)
         self.songProgress.place(relx=0.393, rely=0.209, relwidth=0.495
@@ -194,52 +204,90 @@ class View:
         self.deleteSongsFromPlaylistButton.configure(pady="0")
         self.deleteSongsFromPlaylistButton.configure(text='''Button''')
 
-        self.Button9 = tk.Button(top)
-        self.Button9.place(relx=0.932, rely=0.913, height=42, width=42)
-        self.Button9.configure(activebackground="#ececec")
-        self.Button9.configure(activeforeground="#000000")
-        self.Button9.configure(background="#d9d9d9")
-        self.Button9.configure(borderwidth="0")
-        self.Button9.configure(disabledforeground="#a3a3a3")
-        self.Button9.configure(foreground="#000000")
-        self.Button9.configure(highlightbackground="#d9d9d9")
-        self.Button9.configure(highlightcolor="black")
+        self.addFavourite = tk.Button(top)
+        self.addFavourite.place(relx=0.932, rely=0.913, height=42, width=42)
+        self.addFavourite.configure(activebackground="#ececec")
+        self.addFavourite.configure(activeforeground="#000000")
+        self.addFavourite.configure(background="#d9d9d9")
+        self.addFavourite.configure(borderwidth="0")
+        self.addFavourite.configure(disabledforeground="#a3a3a3")
+        self.addFavourite.configure(foreground="#000000")
+        self.addFavourite.configure(highlightbackground="#d9d9d9")
+        self.addFavourite.configure(highlightcolor="black")
         self._img8 = tk.PhotoImage(file="./icons/like.png")
-        self.Button9.configure(image=self._img8)
-        self.Button9.configure(pady="0")
-        self.Button9.configure(text='''Button''')
-        self.Button9.configure(width=42)
+        self.addFavourite.configure(image=self._img8)
+        self.addFavourite.configure(pady="0")
+        self.addFavourite.configure(text='''Button''')
+        self.addFavourite.configure(width=42)
 
-        self.Button10 = tk.Button(top)
-        self.Button10.place(relx=0.873, rely=0.913, height=42, width=42)
-        self.Button10.configure(activebackground="#ececec")
-        self.Button10.configure(activeforeground="#000000")
-        self.Button10.configure(background="#d9d9d9")
-        self.Button10.configure(borderwidth="0")
-        self.Button10.configure(disabledforeground="#a3a3a3")
-        self.Button10.configure(foreground="#000000")
-        self.Button10.configure(highlightbackground="#d9d9d9")
-        self.Button10.configure(highlightcolor="black")
+        self.removeFavourite = tk.Button(top)
+        self.removeFavourite.place(relx=0.873, rely=0.913, height=42, width=42)
+        self.removeFavourite.configure(activebackground="#ececec")
+        self.removeFavourite.configure(activeforeground="#000000")
+        self.removeFavourite.configure(background="#d9d9d9")
+        self.removeFavourite.configure(borderwidth="0")
+        self.removeFavourite.configure(disabledforeground="#a3a3a3")
+        self.removeFavourite.configure(foreground="#000000")
+        self.removeFavourite.configure(highlightbackground="#d9d9d9")
+        self.removeFavourite.configure(highlightcolor="black")
         self._img9 = tk.PhotoImage(file="./icons/broken-heart.png")
-        self.Button10.configure(image=self._img9)
-        self.Button10.configure(pady="0")
-        self.Button10.configure(text='''Button''')
-        self.Button10.configure(width=48)
+        self.removeFavourite.configure(image=self._img9)
+        self.removeFavourite.configure(pady="0")
+        self.removeFavourite.configure(text='''Button''')
+        self.removeFavourite.configure(width=48)
 
-        self.Button11 = tk.Button(top)
-        self.Button11.place(relx=0.83, rely=0.932, height=26, width=26)
-        self.Button11.configure(activebackground="#ececec")
-        self.Button11.configure(activeforeground="#000000")
-        self.Button11.configure(background="#d9d9d9")
-        self.Button11.configure(borderwidth="0")
-        self.Button11.configure(disabledforeground="#a3a3a3")
-        self.Button11.configure(foreground="#000000")
-        self.Button11.configure(highlightbackground="#d9d9d9")
-        self.Button11.configure(highlightcolor="black")
+        self.loadFavourite = tk.Button(top)
+        self.loadFavourite.place(relx=0.83, rely=0.932, height=26, width=26)
+        self.loadFavourite.configure(activebackground="#ececec")
+        self.loadFavourite.configure(activeforeground="#000000")
+        self.loadFavourite.configure(background="#d9d9d9")
+        self.loadFavourite.configure(borderwidth="0")
+        self.loadFavourite.configure(disabledforeground="#a3a3a3")
+        self.loadFavourite.configure(foreground="#000000")
+        self.loadFavourite.configure(highlightbackground="#d9d9d9")
+        self.loadFavourite.configure(highlightcolor="black")
         self._img10 = tk.PhotoImage(file="./icons/refresh.png")
-        self.Button11.configure(image=self._img10)
-        self.Button11.configure(pady="0")
-        self.Button11.configure(text='''Button''')
+        self.loadFavourite.configure(image=self._img10)
+        self.loadFavourite.configure(pady="0")
+        self.loadFavourite.configure(text='''Button''')
+        
+        # creating our own instance method 
+        self.setup_player()
+
+    def setup_player(self): 
+        try:
+            self.my_player=Player.Player()
+            if self.my_player.get_db_status():
+                messagebox.showinfo("Success!","Connected successfully to the DB")
+            else:
+                raise Exception("Sorry! u cannot save or load favourites")
+
+        except Exception as ex:
+            messagebox.showerror("Error",ex)
+            print(traceback.format_exc( ))
+            self.addFavourite.config(state="disabled")
+            self.loadFavourite.config(state="disabled")
+            self.removeFavourite.config(state="disabled")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
