@@ -267,7 +267,81 @@ class View:
             print(traceback.format_exc( ))
             self.addFavourite.config(state="disabled")
             self.loadFavourite.config(state="disabled")
-            self.removeFavourite.config(state="disabled")
+            self.removeFavourite.config(state="disabled") 
+        
+        self.vol_scale.config(from_=0,to=100,command=self.change_volume)
+        self.vol_scale.set(50)
+        self.addSongsToPlayListButton.config(command=self.add_song)
+        self.deleteSongsFromPlaylistButton.config(command=self.remove_song)
+        self.playButton.config(command=self.play_song)
+        self.stopButton.config(command=self.stop_song)
+        self.pauseButton.config(command=self.pause_song)
+        self.playList.config(font="Vivaldi 12")
+        self.playList.bind("<Double-1>",self.list_double_click)
+        self.top.title("MOUZIKKA-Dance To The Rhythm of Your Heart! ")
+        img=tk.PhotoImage(file="./icons/music1.png")
+        self.top.iconphoto(self.top,img)
+
+
+        self.top.protocol("WM_DELETE_WINDOW",self.closewindow)  # WM_DELETE_WINDOW method is Operating system method handled by window manager when we click on close  symbol , to handle close window option we will call our method closewindow
+        
+        self.isPaused=False
+        self.isPlaying=False
+
+    def change_volume(self,val):
+        volume_level=float(val)/100
+        self.my_player.set_volume(volume_level)
+
+
+    def add_song(self):
+        song_name=self.my_player.add_song()
+        if song_name is None:
+            return
+        self.playList.insert(tk.END,song_name)
+        rcolor=lambda : random.randint(0,255)
+        red=hex(rcolor())
+        green=hex(rcolor())
+        blue=hex(rcolor())
+        red=red[2:]
+        green=green[2:]
+        blue=blue[2:]
+        if len(red)==1:
+            red="0"+red
+        if len(green)==1:
+            green="0"+green
+        if len(blue)==1:
+            blue="0"+blue
+
+        mycolor="#"+red+green+blue
+        self.playList.config(fg=mycolor)
+
+    
+    def remove_song(self):
+        pass
+
+    def show_song_details(self):
+        self.song_length=self.my_player.get_song_legth(self.song_name)
+        # divmod() funct
+
+    def play_song(self):
+        self.song_name=""
+
+    def stop_song(self):
+        pass
+
+    def pause_song(self):
+        pass
+
+    def list_double_click(self,e):
+        pass
+
+    def closewindow(self):
+        print("Event fired")
+        self.top.destroy()
+
+
+
+
 
 
 
