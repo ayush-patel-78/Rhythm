@@ -67,7 +67,7 @@ class Player:  # This class will have to do the following tasks:
             return result
 
         def load_songs_from_favourites(self):                     # this method is calling load_song method of model from model object .
-            result=self.my_model.load_song_from_favourites()
+            result=self.my_model.load_songs_from_favourites()
             return result,self.my_model.song_dict
 
         def remove_song_from_favourites(self,song_name):          # this method is calling remove_song_from_favourites method of model from model object .

@@ -261,6 +261,7 @@ class View:
             if self.my_player.get_db_status():
                 messagebox.showinfo("Success!","Connected successfully to the DB")
                 self.addFavourite.config(command=self.add_song_to_favourites)
+                self.loadFavourite.config(command=self.load_songs_from_favourites)
             else:
                 raise Exception("Sorry! u cannot save or load favourites")
 
@@ -416,6 +417,40 @@ class View:
         except (DatabaseError) as ex2:
             messagebox.showerror("Database error!","Song cannot be added!")
             print(traceback.format_exc())
+
+    def load_songs_from_favourites(self):
+        try :
+            load_result=self.my_player.load_songs_from_favourites()
+            result=load_result[0]
+            if result.find("No songs present")!=-1:
+                messagebox.showinfo("Favourites Empty!!!","No Song present in your favourites")
+                return
+            self.playList.delete(0,tk.END)
+            song_dict=load_result[1]
+            for song_name in song_dict:
+                self.playList.insert(tk.END,song_name)
+            rcolor=lambda : random.randint(0,255)
+            red=hex(rcolor())
+            green=hex(rcolor())
+            blue=hex(rcolor())
+            red=red[2:]
+            green=green[2:]
+            blue=blue[2:]
+            if len(red)==1:
+                red="0"+red
+            if len(green)==1:
+                green="0"+green
+            if len(blue)==1:
+                blue="0"+blue
+
+            mycolor="#"+red+green+blue
+            self.playList.config(fg=mycolor)
+            messagebox.showinfo("Favourites Loaded!!!","Songs loaded successfully from favourites")
+        except (DatabaseError) as ex2:
+            messagebox.showerror("Database error!","Songs cannot be loaded!")
+            print(traceback.format_exc())
+
+
 
 
 
