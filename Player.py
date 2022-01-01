@@ -44,7 +44,7 @@ class Player:  # This class will have to do the following tasks:
             return song_length
 
         def play_song(self):           # As the name indicates itself it will play song 
-            mixer.quit()
+            mixer.quit()               # mixer.quit() will quit the previous song .
             mixer.init(frequency=self.audio_tag.info.sample_rate)  # frequency propert will decide the playbackspeed of song if we dont pass it then song will sometimes play fast and sometimes slow .
             mixer.music.load(self.song_path)
             mixer.music.play()

@@ -321,10 +321,31 @@ class View:
 
     def show_song_details(self):
         self.song_length=self.my_player.get_song_legth(self.song_name)
-        # divmod() funct
+        min,sec=divmod(self.song_length,60)  # divmode function is used to do the division and mod of a number .
+        min=round(min)
+        sec= round(sec)
+        self.songTotalDuration.config(text= str(min)+":"+str(sec))
+        self.songTimePassed.config(text="0:0")
+        ext_index=self.song_name.rfind(".")
+        song_name_str=self.song_name[0:ext_index]  # song name without having extension  ".mp3"
+        if(len(song_name_str)>14):
+            song_name_str=song_name_str[0:14]+". . ."
+        self.songName.configure(text=song_name_str)
 
     def play_song(self):
-        self.song_name=""
+        self.sel_song_index_tuple=self.playList.curselection()
+        try:
+            if len(self.sel_song_index_tuple)==0:
+                raise NoSongSelectedError("Please select a song to play")
+            self.song_name=self.playList.get(self.sel_song_index_tuple[0])
+            print("playing : ",self.song_name)
+            self.show_song_details()
+            self.my_player.play_song()
+            self.change_volume(self.vol_scale.get())   # This step is avoidable since it is changing the volume to 50 , after new song played therefore it is advisable to avoid it .
+            self.isPlaying=True
+        except (NoSongSelectedError) as ex1:
+            messagebox.showerror("Error!",ex1)
+
 
     def stop_song(self):
         pass
@@ -333,7 +354,7 @@ class View:
         pass
 
     def list_double_click(self,e):
-        pass
+        self.play_song()
 
     def closewindow(self):
         print("Event fired")
