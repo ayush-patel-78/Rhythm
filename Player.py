@@ -10,6 +10,27 @@ from mutagen.mp3 import MP3          # MP3 module will provide us ID3 Tag which 
 # 1. Managing the media playes functionality 
 # 2. Interacting with the Model class
 
+
+
+
+
+
+    #######   HH        HH     UU        UU  EEEEEEEEEEEE        HH        HH     UU        UU  EEEEEEEEEEEE    #######
+    #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+    #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+    #######   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+    #######   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+    #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+    #######   HH        HH       UU    UU    EE                  HH        HH       UU    UU    EE              #######
+    #######   HH        HH         UUUU      EEEEEEEEEEEE        HH        HH         UUUU      EEEEEEEEEEEE    #######
+
+
+
+
+
+
+
+
 class Player:  # This class will have to do the following tasks:
                #  it will initialize the pygame.mixer module which will provides us several functions to handle music playing and management (pygame.mixer provides instance methods for playing , stopping , pausing and resume a song )
         def __init__(self) :
@@ -73,3 +94,21 @@ class Player:  # This class will have to do the following tasks:
         def remove_song_from_favourites(self,song_name):          # this method is calling remove_song_from_favourites method of model from model object .
             result=self.my_model.remove_song_from_favourites(song_name)
             return result
+
+
+
+
+
+
+
+
+
+
+       #######   HH        HH     UU        UU  EEEEEEEEEEEE        HH        HH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HH        HH       UU    UU    EE                  HH        HH       UU    UU    EE              #######
+       #######   HH        HH         UUUU      EEEEEEEEEEEE        HH        HH         UUUU      EEEEEEEEEEEE    #######

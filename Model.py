@@ -1,6 +1,31 @@
 # huehuehue....  project kaise chalu karu 
 from cx_Oracle import *   # cx_oracle module is used to connect from oracle database
 from traceback import *   # traceback module is used to help in debugging the code if some exceotion arises 
+
+
+
+
+
+
+
+
+       #######   HH        HH     UU        UU  EEEEEEEEEEEE        HH        HH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HH        HH       UU    UU    EE                  HH        HH       UU    UU    EE              #######
+       #######   HH        HH         UUUU      EEEEEEEEEEEE        HH        HH         UUUU      EEEEEEEEEEEE    #######
+
+
+
+
+
+
+
+
+
 class Model:              # In model class we have to maintain the collection of songs selected by the user to play . In collection I have to keep 2 things song name and song location so I can store it in dictionary (song_dict). 
                           # In model class we will be providing adding and removing songs methods  from the collection as well as retriving song path corresponding to a given song name from collection .
                           # In model class we will be performing database intraction and also provides methods for adding , removing and loading songs from favourites
@@ -84,6 +109,21 @@ class Model:              # In model class we have to maintain the collection of
             self.song_dict.pop(song_name)   # song_name is key in dictionary and song_path is value 
             self.conn.commit()
             return "Song deleted from ur favourites"
+
+
+
+
+
+
+
+       #######   HH        HH     UU        UU  EEEEEEEEEEEE        HH        HH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HH        HH       UU    UU    EE                  HH        HH       UU    UU    EE              #######
+       #######   HH        HH         UUUU      EEEEEEEEEEEE        HH        HH         UUUU      EEEEEEEEEEEE    #######
 
 
 

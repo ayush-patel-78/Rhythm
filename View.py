@@ -13,7 +13,36 @@ from cx_Oracle import DatabaseError
 from pygame import mixer 
 import Player
 from MyException import *       # for handling our exceptions    
-import traceback                 
+import traceback          
+
+
+
+
+
+
+
+       #######   HH        HH     UU        UU  EEEEEEEEEEEE        HH        HH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HH        HH       UU    UU    EE                  HH        HH       UU    UU    EE              #######
+       #######   HH        HH         UUUU      EEEEEEEEEEEE        HH        HH         UUUU      EEEEEEEEEEEE    #######
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def vp_start_gui():
     # Starting point when module is the main routine.
@@ -251,8 +280,22 @@ class View:
         self.loadFavourite.configure(image=self._img10)
         self.loadFavourite.configure(pady="0")
         self.loadFavourite.configure(text='''Button''')
-        
-        # creating our own instance method 
+
+
+
+       ####   HH        HH     UU        UU  EEEEEEEEEEEE        HH        HH     UU        UU  EEEEEEEEEEEE    #######
+       ####   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       ####   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       ####   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       ####   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       ####   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       ####   HH        HH       UU    UU    EE                  HH        HH       UU    UU    EE              #######
+       ####   HH        HH         UUUU      EEEEEEEEEEEE        HH        HH         UUUU      EEEEEEEEEEEE    #######
+       
+
+
+
+
         self.setup_player()
 
     def setup_player(self): 
@@ -262,6 +305,7 @@ class View:
                 messagebox.showinfo("Success!","Connected successfully to the DB")
                 self.addFavourite.config(command=self.add_song_to_favourites)
                 self.loadFavourite.config(command=self.load_songs_from_favourites)
+                self.removeFavourite.config(command=self.remove_song_from_favourites)
             else:
                 raise Exception("Sorry! u cannot save or load favourites")
 
@@ -372,9 +416,11 @@ class View:
         if self.isPlaying:
             if self.isPaused:
                 self.my_player.unpause_song()
+                print("playing song")
                 self.isPaused=False
             else:
                 self.my_player.pause_song()
+                print("song paused")
                 self.isPaused=True
                 
             
@@ -450,30 +496,42 @@ class View:
             messagebox.showerror("Database error!","Songs cannot be loaded!")
             print(traceback.format_exc())
 
+    def remove_song_from_favourites(self):
+        remove_fav_song_index_tuple=self.playList.curselection()
+        try:
+            if len(remove_fav_song_index_tuple)==0:
+                raise NoSongSelectedError("Please select a song before removing from favourites")
+            song_name=self.playList.get(remove_fav_song_index_tuple[0])
+            result=self.my_player.remove_song_from_favourites(song_name)
+            messagebox.showinfo("Removing",result)
+            if result.find("Song not present")==-1:
+                self.song_index_tuple=self.playList.curselection()
+                song_name=self.playList.get(self.song_index_tuple[0])
+                self.playList.delete(self.song_index_tuple[0])
+                self.my_player.remove_song(song_name)
+            
+        except (NoSongSelectedError) as ex1:
+            messagebox.showerror("Error!",ex1)
+        except (DatabaseError) as ex2:
+            messagebox.showerror("Database error!","Song cannot be removed from favourites !")
+            print(traceback.format_exc())
+            
+        
+            
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+       ####   HH        HH     UU        UU  EEEEEEEEEEEE        HH        HH     UU        UU  EEEEEEEEEEEE    #######
+       ####   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       ####   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       ####   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       ####   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       ####   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       ####   HH        HH       UU    UU    EE                  HH        HH       UU    UU    EE              #######
+       ####   HH        HH         UUUU      EEEEEEEEEEEE        HH        HH         UUUU      EEEEEEEEEEEE    #######
 
 
 
@@ -606,5 +664,18 @@ if __name__ == '__main__':
 
 
 
+
+
+
+
+
+       #######   HH        HH     UU        UU  EEEEEEEEEEEE        HH        HH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE        HHHHHHHHHHHH     UU        UU  EEEEEEEEEEEE    #######
+       #######   HH        HH     UU        UU  EE                  HH        HH     UU        UU  EE              #######
+       #######   HH        HH       UU    UU    EE                  HH        HH       UU    UU    EE              #######
+       #######   HH        HH         UUUU      EEEEEEEEEEEE        HH        HH         UUUU      EEEEEEEEEEEE    #######
 
 
