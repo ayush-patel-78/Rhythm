@@ -19,6 +19,9 @@ class Player:  # This class will have to do the following tasks:
         def get_db_status(self):
             return self.my_model.get_db_status()
 
+        def get_song_count(self):
+            return self.my_model.get_song_count()
+
         def close_player(self):
             mixer.music.stop()      # this will stop the music by calling the stop method from mixer.music 
             self.my_model.close_db_connection()

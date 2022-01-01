@@ -20,6 +20,9 @@ class Model:              # In model class we have to maintain the collection of
 
     def get_db_status(self):      #  get_db_status() function will tell us the state of database whether it is connected or not 
         return self.db_status
+    
+    def get_song_count(self):
+        return len(self.song_dict)
 
     def close_db_connection(self):   # close_db_connection() function is used to close the connection from database 
         if self.cur is not None:     #first close the cursor and then after that close connection 

@@ -3,6 +3,7 @@
 import random                      # for randomly changing color of song name 
 import sys                         # sys module provides exit method and other system information 
 import tkinter as tk
+from tkinter.constants import COMMAND, FALSE
 import tkinter.ttk as ttk
 import musicplayer_support
 import threading                   # it is used for multithreading 
@@ -148,7 +149,7 @@ class View:
         self.playList.configure(selectforeground="black")
         self.playList.configure(width=10)
 
-        self.previousButton = tk.Label(top)
+        self.previousButton = tk.Button(top)
         self.previousButton.place(relx=0.509, rely=0.285, height=16, width=16)
         self.previousButton.configure(background="#fff")
         self.previousButton.configure(borderwidth="0")
@@ -259,6 +260,7 @@ class View:
             self.my_player=Player.Player()
             if self.my_player.get_db_status():
                 messagebox.showinfo("Success!","Connected successfully to the DB")
+                self.addFavourite.config(command=self.add_song_to_favourites)
             else:
                 raise Exception("Sorry! u cannot save or load favourites")
 
@@ -281,12 +283,14 @@ class View:
         self.top.title("MOUZIKKA-Dance To The Rhythm of Your Heart! ")
         img=tk.PhotoImage(file="./icons/music1.png")
         self.top.iconphoto(self.top,img)
+        
 
 
         self.top.protocol("WM_DELETE_WINDOW",self.closewindow)  # WM_DELETE_WINDOW method is Operating system method handled by window manager when we click on close  symbol , to handle close window option we will call our method closewindow
         
         self.isPaused=False
         self.isPlaying=False
+        self.previousButton.config(command=self.load_previous_song)
 
     def change_volume(self,val):
         volume_level=float(val)/100
@@ -317,7 +321,18 @@ class View:
 
     
     def remove_song(self):
-        pass
+        self.song_index_tuple=self.playList.curselection()
+        try:
+            if len(self.song_index_tuple)==0:
+                raise NoSongSelectedError("Please select a song to remove")
+            song_name=self.playList.get(self.song_index_tuple[0])
+            self.playList.delete(self.song_index_tuple[0])
+            self.my_player.remove_song(song_name)
+            
+        except (NoSongSelectedError) as ex1:
+            messagebox.showerror("Error!",ex1)
+
+
 
     def show_song_details(self):
         self.song_length=self.my_player.get_song_legth(self.song_name)
@@ -348,17 +363,62 @@ class View:
 
 
     def stop_song(self):
-        pass
+        self.my_player.stop_song()
+        print("Stop playing : ",self.song_name)
+        self.isPlaying=False 
 
     def pause_song(self):
-        pass
+        if self.isPlaying:
+            if self.isPaused:
+                self.my_player.unpause_song()
+                self.isPaused=False
+            else:
+                self.my_player.pause_song()
+                self.isPaused=True
+                
+            
 
     def list_double_click(self,e):
         self.play_song()
 
     def closewindow(self):
-        print("Event fired")
-        self.top.destroy()
+        result=messagebox.askyesno("App Closing!!!","Do you want to quit ?")
+        if result:
+            self.my_player.close_player()
+            messagebox.showinfo("Have a good day!","Thank you for using \"MOUZIKKA\" ")   # Closing Appp message 
+            self.top.destroy()
+
+    def load_previous_song(self):
+        try:
+            if hasattr(self,"sel_song_index_tuple")==False:
+                raise NoSongSelectedError("Please select a song")
+            self.prev_song_index=self.sel_song_index_tuple[0]-1
+            if self.prev_song_index==-1:
+                print("size:",self.my_player.get_song_count())
+                self.prev_song_index=self.my_player.get_song_count()-1
+            self.playList.select_clear(0,tk.END)
+            self.playList.selection_set(self.prev_song_index)
+            self.play_song() 
+            
+        except (NoSongSelectedError) as ex1:
+            messagebox.showerror("Error!",ex1)
+
+    def add_song_to_favourites(self):
+        fav_song_index_tuple=self.playList.curselection()
+        try:
+            if len(fav_song_index_tuple)==0:
+                raise NoSongSelectedError("Please select a song before adding to favourites")
+            song_name=self.playList.get(fav_song_index_tuple[0])
+            result=self.my_player.add_song_to_favourites(song_name)
+            messagebox.showinfo("success!",result)
+        except (NoSongSelectedError) as ex1:
+            messagebox.showerror("Error!",ex1)
+        except (DatabaseError) as ex2:
+            messagebox.showerror("Database error!","Song cannot be added!")
+            print(traceback.format_exc())
+
+
+
 
 
 
