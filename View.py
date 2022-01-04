@@ -337,9 +337,14 @@ class View:
         self.isPlaying=False
         self.previousButton.config(command=self.load_previous_song)
 
+        self.my_thread=None
+        self.isThreadRunning=False
+        self.stopThread=False
+
     def change_volume(self,val):
         volume_level=float(val)/100
         self.my_player.set_volume(volume_level)
+        print("Volume:",val)
 
 
     def add_song(self):
@@ -380,10 +385,9 @@ class View:
 
 
     def show_song_details(self):
-        self.song_length=self.my_player.get_song_legth(self.song_name)
-        min,sec=divmod(self.song_length,60)  # divmode function is used to do the division and mod of a number .
-        min=round(min)
-        sec= round(sec)
+        self.song_length=int(self.my_player.get_song_legth(self.song_name))
+        min,sec=divmod(self.song_length,60)  # divmod function is used to do the division and mod of a number .
+        
         self.songTotalDuration.config(text= str(min)+":"+str(sec))
         self.songTimePassed.config(text="0:0")
         ext_index=self.song_name.rfind(".")
@@ -393,6 +397,11 @@ class View:
         self.songName.configure(text=song_name_str)
 
     def play_song(self):
+        if self.isThreadRunning==True:
+            self.my_player.stop_song()
+            self.isThreadRunning=False
+            self.isPlaying=False
+            time.sleep(1)
         self.sel_song_index_tuple=self.playList.curselection()
         try:
             if len(self.sel_song_index_tuple)==0:
@@ -402,15 +411,28 @@ class View:
             self.show_song_details()
             self.my_player.play_song()
             self.change_volume(self.vol_scale.get())   # This step is avoidable since it is changing the volume to 50 , after new song played therefore it is advisable to avoid it .
-            self.isPlaying=True
+            self.songProgress.config(length=self.song_length)
+            self.songProgress.config(maximum=self.song_length)
+            self.setup_thread()
         except (NoSongSelectedError) as ex1:
             messagebox.showerror("Error!",ex1)
 
 
     def stop_song(self):
-        self.my_player.stop_song()
-        print("Stop playing : ",self.song_name)
-        self.isPlaying=False 
+        if self.isThreadRunning==True:
+            self.my_player.stop_song()
+            print("Stop playing : ",self.song_name)
+            self.stopThread=True
+            self.isThreadRunning=False
+            self.isPlaying=False
+            time.sleep(1)
+
+
+    def setup_thread(self):
+        self.my_thread=threading.Thread(target=self.show_timer,args=(self.song_length,))
+        self.isPlaying=True
+        self.isThreadRunning=True
+        self.my_thread.start()
 
     def pause_song(self):
         if self.isPlaying:
@@ -422,15 +444,20 @@ class View:
                 self.my_player.pause_song()
                 print("song paused")
                 self.isPaused=True
+        
                 
             
 
     def list_double_click(self,e):
+        if self.isThreadRunning==True:
+            self.stopThread=True
         self.play_song()
+
 
     def closewindow(self):
         result=messagebox.askyesno("App Closing!!!","Do you want to quit ?")
         if result:
+            self.stopThread==True
             self.my_player.close_player()
             messagebox.showinfo("Have a good day!","Thank you for using \"MOUZIKKA\" ")   # Closing Appp message 
             self.top.destroy()
@@ -445,6 +472,21 @@ class View:
                 self.prev_song_index=self.my_player.get_song_count()-1
             self.playList.select_clear(0,tk.END)
             self.playList.selection_set(self.prev_song_index)
+            self.play_song() 
+            
+        except (NoSongSelectedError) as ex1:
+            messagebox.showerror("Error!",ex1)
+
+
+    def load_next_song(self):
+        try:
+            if hasattr(self,"sel_song_index_tuple")==False:
+                raise NoSongSelectedError("Please select a song")
+            self.next_song_index=self.sel_song_index_tuple[0]+1
+            if self.next_song_index==self.my_player.get_song_count():
+                self.next_song_index=0
+            self.playList.select_clear(0,tk.END)
+            self.playList.selection_set(self.next_song_index)
             self.play_song() 
             
         except (NoSongSelectedError) as ex1:
@@ -518,7 +560,22 @@ class View:
             
         
             
-
+    def show_timer(self,total_sec):
+        curr_sec=1
+        self.songProgress.stop()
+        while curr_sec<=total_sec:
+            min,sec=divmod(curr_sec,60)
+            self.songTimePassed.config(text=str(min)+":"+str(sec))
+            time.sleep(1)
+            curr_sec+=1
+            self.songProgress.step()
+            if self.stopThread==True:
+                break
+        print("Thread terminated!")
+        if self.stopThread==False:
+            self.load_next_song()
+        else:
+            self.stopThread=False
 
 
 
