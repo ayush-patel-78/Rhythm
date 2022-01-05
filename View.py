@@ -438,11 +438,11 @@ class View:
         if self.isPlaying:
             if self.isPaused:
                 self.my_player.unpause_song()
-                print("playing song")
+                # print("playing song")
                 self.isPaused=False
             else:
                 self.my_player.pause_song()
-                print("song paused")
+                # print("song paused")
                 self.isPaused=True
         
                 
@@ -464,6 +464,8 @@ class View:
 
     def load_previous_song(self):
         try:
+            if self.isThreadRunning==True:
+                self.stopThread=True
             if hasattr(self,"sel_song_index_tuple")==False:
                 raise NoSongSelectedError("Please select a song")
             self.prev_song_index=self.sel_song_index_tuple[0]-1
@@ -571,6 +573,12 @@ class View:
             self.songProgress.step()
             if self.stopThread==True:
                 break
+            if self.isPaused==True:
+                print("Song Paused")
+                while self.isPaused==True:
+                    time.sleep(1)
+                print("song resumed")
+       
         print("Thread terminated!")
         if self.stopThread==False:
             self.load_next_song()
