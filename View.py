@@ -429,10 +429,11 @@ class View:
 
 
     def setup_thread(self):
-        self.my_thread=threading.Thread(target=self.show_timer,args=(self.song_length,))
+        self.my_thread=threading.Thread(target=self.show_timer,args=(self.song_length,),name="Hue Hue Hue....")
         self.isPlaying=True
         self.isThreadRunning=True
         self.my_thread.start()
+        
 
     def pause_song(self):
         if self.isPlaying:
@@ -459,7 +460,7 @@ class View:
         if result:
             self.stopThread==True
             self.my_player.close_player()
-            messagebox.showinfo("Have a good day!","Thank you for using \"MOUZIKKA\" ")   # Closing Appp message 
+            messagebox.showinfo("Have a good day!","Thank you for using \"MOUZIKKA\" ")   # Closing App message 
             self.top.destroy()
 
     def load_previous_song(self):
@@ -565,6 +566,9 @@ class View:
     def show_timer(self,total_sec):
         curr_sec=1
         self.songProgress.stop()
+        print(threading.current_thread().getName(),"Activated!!!")
+        print("No. of active threads:",threading.active_count())
+        print("show_timer thread name:",threading.current_thread().getName())
         while curr_sec<=total_sec:
             min,sec=divmod(curr_sec,60)
             self.songTimePassed.config(text=str(min)+":"+str(sec))
@@ -579,7 +583,7 @@ class View:
                     time.sleep(1)
                 print("song resumed")
        
-        print("Thread terminated!")
+        print("Previous Thread terminated!")
         if self.stopThread==False:
             self.load_next_song()
         else:
